@@ -1,6 +1,6 @@
-package com.n26.logic.services;
+package com.n26.logic.statistics;
 
-import com.n26.logic.model.Statistic;
+import com.n26.logic.statistics.model.Statistic;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;

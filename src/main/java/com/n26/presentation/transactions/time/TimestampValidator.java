@@ -1,13 +1,13 @@
 package com.n26.presentation.transactions.time;
 
-import com.n26.logic.exception.FutureTransactionException;
-import com.n26.logic.exception.OutdatedTransactionException;
+import com.n26.logic.transactions.exception.FutureTransactionException;
+import com.n26.logic.transactions.exception.OutdatedTransactionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 
-import static com.n26.logic.configuration.StatisticsTimeConfiguration.TIME_WINDOW;
+import static com.n26.logic.statistics.configuration.StatisticsTimeConfiguration.TIME_WINDOW;
 
 @Service
 public class TimestampValidator {

@@ -1,9 +1,9 @@
 package com.n26.presentation;
 
 import com.fasterxml.jackson.core.JsonParseException;
-import com.n26.logic.exception.FutureTransactionException;
-import com.n26.logic.exception.InvalidTransactionException;
-import com.n26.logic.exception.OutdatedTransactionException;
+import com.n26.logic.transactions.exception.FutureTransactionException;
+import com.n26.logic.transactions.exception.InvalidTransactionException;
+import com.n26.logic.transactions.exception.OutdatedTransactionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

@@ -1,9 +1,9 @@
 package com.n26.data;
 
 
-import com.n26.logic.model.Statistic;
-import com.n26.logic.model.Transaction;
-import com.n26.logic.repositories.StatisticsRepository;
+import com.n26.logic.statistics.model.Statistic;
+import com.n26.logic.transactions.model.Transaction;
+import com.n26.logic.statistics.repositories.StatisticsRepository;
 import com.n26.presentation.transactions.time.TimeProvider;
 import org.junit.Before;
 import org.junit.Test;

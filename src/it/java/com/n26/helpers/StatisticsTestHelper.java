@@ -1,8 +1,8 @@
 package com.n26.helpers;
 
-import com.n26.logic.model.Statistic;
-import com.n26.logic.model.Transaction;
-import com.n26.logic.services.BigDecimalSummaryStatistics;
+import com.n26.logic.statistics.model.Statistic;
+import com.n26.logic.transactions.model.Transaction;
+import com.n26.logic.statistics.BigDecimalSummaryStatistics;
 
 public class StatisticsTestHelper {
 

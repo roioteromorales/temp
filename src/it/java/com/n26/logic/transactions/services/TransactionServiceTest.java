@@ -1,26 +1,20 @@
-package com.n26.services;
+package com.n26.logic.transactions.services;
 
 
-import com.n26.logic.exception.OutdatedTransactionException;
-import com.n26.logic.model.Transaction;
-import com.n26.logic.services.BigDecimalSummaryStatistics;
-import com.n26.logic.services.StatisticsService;
-import com.n26.presentation.transactions.time.TimeProvider;
-import com.n26.logic.services.TransactionService;
+import com.n26.logic.transactions.model.Transaction;
+import com.n26.logic.statistics.services.StatisticsService;
+import com.n26.logic.transactions.services.TransactionService;
 import com.n26.presentation.transactions.time.TimestampValidator;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
-import static com.n26.logic.configuration.StatisticsTimeConfiguration.TIME_WINDOW;
+import static com.n26.logic.statistics.configuration.StatisticsTimeConfiguration.TIME_WINDOW;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)

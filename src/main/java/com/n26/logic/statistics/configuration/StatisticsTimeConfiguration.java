@@ -1,4 +1,4 @@
-package com.n26.logic.configuration;
+package com.n26.logic.statistics.configuration;
 
 public class StatisticsTimeConfiguration {
     private static final int SIXTY_SECONDS = 60000;

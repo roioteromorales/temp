@@ -1,6 +1,6 @@
 package com.n26.presentation.statistics;
 
-import com.n26.logic.services.StatisticsService;
+import com.n26.logic.statistics.services.StatisticsService;
 import com.n26.presentation.statistics.model.ApiStatistic;
 import com.n26.presentation.statistics.model.StatisticsMapper;
 import org.springframework.beans.factory.annotation.Autowired;

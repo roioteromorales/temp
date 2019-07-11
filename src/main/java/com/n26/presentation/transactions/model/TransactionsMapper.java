@@ -1,7 +1,7 @@
 package com.n26.presentation.transactions.model;
 
-import com.n26.logic.exception.InvalidTransactionException;
-import com.n26.logic.model.Transaction;
+import com.n26.logic.transactions.exception.InvalidTransactionException;
+import com.n26.logic.transactions.model.Transaction;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;

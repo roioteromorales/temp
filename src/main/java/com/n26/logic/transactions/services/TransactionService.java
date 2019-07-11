@@ -1,6 +1,7 @@
-package com.n26.logic.services;
+package com.n26.logic.transactions.services;
 
-import com.n26.logic.model.Transaction;
+import com.n26.logic.transactions.model.Transaction;
+import com.n26.logic.statistics.services.StatisticsService;
 import com.n26.presentation.transactions.time.TimestampValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

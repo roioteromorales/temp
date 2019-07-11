@@ -1,7 +1,7 @@
-package com.n26.logic.services;
+package com.n26.logic.statistics;
 
 
-import com.n26.logic.model.Statistic;
+import com.n26.logic.statistics.BigDecimalSummaryStatistics;
 import org.junit.Before;
 import org.junit.Test;
 

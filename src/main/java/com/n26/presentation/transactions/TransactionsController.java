@@ -1,7 +1,7 @@
 package com.n26.presentation.transactions;
 
 
-import com.n26.logic.services.TransactionService;
+import com.n26.logic.transactions.services.TransactionService;
 import com.n26.presentation.transactions.model.ApiTransaction;
 import com.n26.presentation.transactions.model.TransactionsMapper;
 import org.springframework.beans.factory.annotation.Autowired;

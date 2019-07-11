@@ -1,12 +1,11 @@
-package com.n26.presentation;
+package com.n26.presentation.transactions;
 
 
-import com.n26.logic.exception.FutureTransactionException;
-import com.n26.logic.exception.InvalidTransactionException;
-import com.n26.logic.exception.OutdatedTransactionException;
-import com.n26.logic.model.Transaction;
-import com.n26.logic.services.TransactionService;
-import com.n26.presentation.transactions.TransactionsController;
+import com.n26.logic.transactions.exception.FutureTransactionException;
+import com.n26.logic.transactions.exception.InvalidTransactionException;
+import com.n26.logic.transactions.exception.OutdatedTransactionException;
+import com.n26.logic.transactions.model.Transaction;
+import com.n26.logic.transactions.services.TransactionService;
 import com.n26.presentation.transactions.model.ApiTransaction;
 import com.n26.presentation.transactions.model.TransactionsMapper;
 import io.restassured.http.ContentType;

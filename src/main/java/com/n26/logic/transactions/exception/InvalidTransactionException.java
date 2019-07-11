@@ -1,4 +1,4 @@
-package com.n26.logic.exception;
+package com.n26.logic.transactions.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

@@ -1,6 +1,6 @@
 package com.n26.helpers;
 
-import com.n26.logic.model.Transaction;
+import com.n26.logic.transactions.model.Transaction;
 
 import java.math.BigDecimal;
 import java.time.Instant;

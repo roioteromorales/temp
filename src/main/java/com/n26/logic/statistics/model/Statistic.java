@@ -1,4 +1,4 @@
-package com.n26.logic.model;
+package com.n26.logic.statistics.model;
 
 import lombok.Data;
 

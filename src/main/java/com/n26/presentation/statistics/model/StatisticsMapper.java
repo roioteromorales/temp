@@ -1,6 +1,6 @@
 package com.n26.presentation.statistics.model;
 
-import com.n26.logic.model.Statistic;
+import com.n26.logic.statistics.model.Statistic;
 import org.springframework.stereotype.Service;
 
 import static java.math.BigDecimal.ROUND_HALF_UP;

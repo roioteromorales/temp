@@ -1,8 +1,7 @@
-package com.n26.presentation;
+package com.n26.presentation.statistics;
 
-import com.n26.logic.model.Statistic;
-import com.n26.logic.services.StatisticsService;
-import com.n26.presentation.statistics.StatisticsController;
+import com.n26.logic.statistics.model.Statistic;
+import com.n26.logic.statistics.services.StatisticsService;
 import com.n26.presentation.statistics.model.ApiStatistic;
 import com.n26.presentation.statistics.model.StatisticsMapper;
 import io.restassured.http.ContentType;
@@ -17,7 +16,6 @@ import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpStatus.OK;
-
 
 @RunWith(MockitoJUnitRunner.class)
 public class StatisticsControllerTest {
@@ -42,9 +40,9 @@ public class StatisticsControllerTest {
 
 
         ApiStatistic returnedStatistic = given()
-                .when()
+            .when()
                 .get("/statistics")
-                .then()
+            .then()
                 .assertThat()
                 .statusCode(OK.value())
                 .contentType(ContentType.JSON)
