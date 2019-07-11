@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Repository
 public class InMemoryStatisticsRepository implements StatisticsRepository {
@@ -18,7 +20,7 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
     private static final int BUCKETS = MILLISECONDS_TO_KEEP / MILLISECONDS_PER_BUCKET;
 
     private StatisticsBucket[] buckets = new StatisticsBucket[BUCKETS];
-
+    private Lock[] locks = new ReentrantLock[BUCKETS];
     private TimeProvider timeProvider;
 
     @Autowired
@@ -28,18 +30,23 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
 
     @Override
     public void add(Transaction transaction) {
-        StatisticsBucket statistics = getStatisticsBucketFor(transaction.getTimestamp());
-        statistics.add(transaction.getAmount());
+        int bucketIndex = getBucketIndexFor(transaction.getTimestamp());
+        lock(bucketIndex);
+        try {
+            StatisticsBucket bucket = getBucketFor(transaction.getTimestamp());
+            bucket.add(transaction.getAmount());
+        } finally {
+            unlock(bucketIndex);
+        }
     }
 
     @Override
     public Statistic getStatistics() {
-        StatisticsBucket total = new StatisticsBucket(now());
-        for (StatisticsBucket bucket : buckets) {
+        StatisticsBucket total = new StatisticsBucket(timeProvider.now());
+        for (int bucketIndex = 0; bucketIndex < buckets.length; bucketIndex++) {
+            StatisticsBucket bucket = buckets[bucketIndex];
             if (bucket != null) {
-                if (isOutdated(bucket.getTime())) {
-                    bucket.reset();
-                }
+                resetIfOutdated(bucketIndex, bucket);
                 total.merge(bucket);
             }
         }
@@ -47,37 +54,61 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
     }
 
     @Override
-    public void resetAll() {//todo deal with synchronization
+    public void resetAll() {
         buckets = new StatisticsBucket[BUCKETS];
     }
 
-    private StatisticsBucket getStatisticsBucketFor(Instant timestamp) {
-        StatisticsBucket bucket = buckets[getBucketFor(timestamp)];
-        if (bucket == null) {
-            bucket = new StatisticsBucket(timestamp);
-            buckets[getBucketFor(timestamp)] = bucket;
+    private void resetIfOutdated(int bucketIndex, StatisticsBucket bucket) {
+        lock(bucketIndex);
+        try {
+            if (isOutdated(bucket.getTimestamp())) {
+                bucket.reset();
+            }
+        } finally {
+            unlock(bucketIndex);
         }
+    }
 
-        if (isOutdated(bucket.getTime())) {
+    private StatisticsBucket getBucketFor(Instant timestamp) {
+        StatisticsBucket bucket = getStatisticsBucketOrDefault(timestamp);
+        if (isOutdated(bucket.getTimestamp())) {
             bucket.reset();
         }
-
         return bucket;
     }
 
+    private StatisticsBucket getStatisticsBucketOrDefault(Instant timestamp) {
+        int bucketIndex = getBucketIndexFor(timestamp);
+        if (buckets[bucketIndex] == null) {
+            buckets[bucketIndex] = new StatisticsBucket(timestamp);
+        }
+        return buckets[bucketIndex];
+    }
+
+    private Lock getLockOrDefault(int bucketIndex) {
+        if (locks[bucketIndex] == null) {
+            locks[bucketIndex] = new ReentrantLock();
+        }
+        return locks[bucketIndex];
+    }
+
+    private void unlock(int bucketIndex) {
+        getLockOrDefault(bucketIndex).unlock();
+    }
+
+    private void lock(int bucketIndex) {
+        getLockOrDefault(bucketIndex).lock();
+    }
+
     private boolean isOutdated(Instant bucketTime) {
-        return (bucketTime.isBefore(now().minusMillis(MILLISECONDS_TO_KEEP)));
+        return (bucketTime.isBefore(timeProvider.now().minusMillis(MILLISECONDS_TO_KEEP)));
     }
 
-    private Instant now() {
-        return timeProvider.getCurrentTimestamp();
+    private int getBucketIndexFor(Instant timestamp) {
+        return (int) (truncateTimestamp(timestamp) % BUCKETS);
     }
 
-    private int getBucketFor(Instant timestamp) {
-        return (int) (bucketTime(timestamp) % BUCKETS);
-    }
-
-    private long bucketTime(Instant timestamp) {
+    private long truncateTimestamp(Instant timestamp) {
         return timestamp.toEpochMilli() / MILLISECONDS_PER_BUCKET;
     }
 }

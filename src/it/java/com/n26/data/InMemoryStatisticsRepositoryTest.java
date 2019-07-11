@@ -31,7 +31,7 @@ public class InMemoryStatisticsRepositoryTest {
     @Before
     public void setUp() {
         statisticsRepository = new InMemoryStatisticsRepository(timeProvider);
-        when(timeProvider.getCurrentTimestamp()).thenReturn(NOW);
+        when(timeProvider.now()).thenReturn(NOW);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class InMemoryStatisticsRepositoryTest {
 
         assertThat(statisticsRepository.getStatistics()).isEqualTo(statisticsFrom(transaction));
 
-        when(timeProvider.getCurrentTimestamp()).thenReturn(NOW.plusSeconds(65));
+        when(timeProvider.now()).thenReturn(NOW.plusSeconds(65));
 
         assertThat(statisticsRepository.getStatistics()).isEqualTo(Statistic.empty());
     }

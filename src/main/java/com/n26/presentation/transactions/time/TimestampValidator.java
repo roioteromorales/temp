@@ -20,7 +20,7 @@ public class TimestampValidator {
     }
 
     public void assertValid(Instant transactionTimestamp) {
-        Instant currentTimestamp = timeProvider.getCurrentTimestamp();
+        Instant currentTimestamp = timeProvider.now();
         if (currentTimestamp.isBefore(transactionTimestamp)) {
             String message = "Timestamp " + transactionTimestamp + " is future than " + currentTimestamp;
             throw new FutureTransactionException(message);

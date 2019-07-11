@@ -17,15 +17,16 @@ public class StatisticsBucket {
         statistics.accept(amount);
     }
 
-    public StatisticsBucket merge(StatisticsBucket statisticsBucket){
+    public StatisticsBucket merge(StatisticsBucket statisticsBucket) {
         statistics = statistics.merge(statisticsBucket.statistics);
         return this;
     }
+
     public void reset() {
         statistics.reset();
     }
 
-    public Instant getTime() {
+    public Instant getTimestamp() {
         return bucketTime;
     }
 

@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 @Service
 public class TimeProvider {
 
-    public Instant getCurrentTimestamp() {
+    public Instant now() {
         return Instant.now().truncatedTo( ChronoUnit.MILLIS );
     }
 }
