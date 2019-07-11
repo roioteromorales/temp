@@ -4,7 +4,6 @@ package com.n26.data;
 import com.n26.logic.model.Statistic;
 import com.n26.logic.model.Transaction;
 import com.n26.logic.repositories.StatisticsRepository;
-import com.n26.logic.services.BigDecimalSummaryStatistics;
 import com.n26.presentation.transactions.time.TimeProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,21 +11,18 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import java.math.BigDecimal;
-import java.time.Instant;
-
+import static com.n26.helpers.StatisticsTestHelper.statisticsFrom;
+import static com.n26.helpers.TransactionsTestHelper.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class InMemoryStatisticsRepositoryTest {
 
-    private static final Instant NOW = Instant.ofEpochMilli(100000);
-    private static final BigDecimal AMOUNT = new BigDecimal(12.345);
-    private StatisticsRepository statisticsRepository;
-
     @Mock
     private TimeProvider timeProvider;
+
+    private StatisticsRepository statisticsRepository;
 
     @Before
     public void setUp() {
@@ -60,11 +56,11 @@ public class InMemoryStatisticsRepositoryTest {
 
         Statistic statistics = statisticsRepository.getStatistics();
 
-        assertThat(statistics).isEqualTo(statisticsFrom(transaction,transaction2));
+        assertThat(statistics).isEqualTo(statisticsFrom(transaction, transaction2));
     }
 
     @Test
-    public void whenAddingAnOutdatedTransactionToABucket_shouldNotAppearInTheStatistics() {
+    public void whenAddingAnOutdatedTransactionToABucket_shouldReturnEmptyStatistics() {
         Transaction transaction = anOutdatedTransaction();
         statisticsRepository.add(transaction);
 
@@ -74,7 +70,7 @@ public class InMemoryStatisticsRepositoryTest {
     }
 
     @Test
-    public void whenAddingAValidTransactionToABucket_thenBecomesOutdated_shouldNotAppearInTheStatistics() {
+    public void whenAddingAValidTransactionToABucket_thenBecomesOutdated_shouldReturnEmptyStatistics() {
         Transaction transaction = aValidTransaction();
         statisticsRepository.add(transaction);
 
@@ -85,25 +81,16 @@ public class InMemoryStatisticsRepositoryTest {
         assertThat(statisticsRepository.getStatistics()).isEqualTo(Statistic.empty());
     }
 
-    private Transaction aValidTransaction() {
-        Transaction transaction = new Transaction();
-        transaction.setTimestamp(NOW);
-        transaction.setAmount(AMOUNT);
-        return transaction;
+    @Test
+    public void whenAddingTransactions_thenResettingAll_shouldReturnEmptyStatistics() {
+        Transaction transaction = aValidTransaction();
+        statisticsRepository.add(transaction);
+
+        statisticsRepository.resetAll();
+        Statistic statistics = statisticsRepository.getStatistics();
+
+        assertThat(statistics).isEqualTo(Statistic.empty());
     }
 
-    private Transaction anOutdatedTransaction() {
-        Transaction transaction = new Transaction();
-        transaction.setTimestamp(NOW.minusSeconds(61));
-        transaction.setAmount(AMOUNT);
-        return transaction;
-    }
 
-    private Statistic statisticsFrom(Transaction... transactions) {
-        BigDecimalSummaryStatistics result = new BigDecimalSummaryStatistics();
-        for (Transaction t : transactions){
-            result.accept(t.getAmount());
-        }
-        return result.getStatistics();
-    }
 }

@@ -12,6 +12,8 @@ import java.time.Instant;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 @Repository
 public class InMemoryStatisticsRepository implements StatisticsRepository {
 
@@ -22,6 +24,7 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
     private StatisticsBucket[] buckets = new StatisticsBucket[BUCKETS];
     private Lock[] locks = new ReentrantLock[BUCKETS];
     private TimeProvider timeProvider;
+    private StatisticsBucket cachedStatistics = new StatisticsBucket(Instant.MIN.truncatedTo(SECONDS));
 
     @Autowired
     public InMemoryStatisticsRepository(TimeProvider timeProvider) {
@@ -33,7 +36,7 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
         int bucketIndex = getBucketIndexFor(transaction.getTimestamp());
         lock(bucketIndex);
         try {
-            StatisticsBucket bucket = getBucketFor(transaction.getTimestamp());
+            StatisticsBucket bucket = getBucketFor(transaction.getTimestamp(), bucketIndex);
             bucket.add(transaction.getAmount());
         } finally {
             unlock(bucketIndex);
@@ -42,7 +45,25 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
 
     @Override
     public Statistic getStatistics() {
-        StatisticsBucket total = new StatisticsBucket(timeProvider.now());
+        if (cachedStatistics.getTimestamp().isBefore(timeProvider.now())) {
+            cachedStatistics = generateStatistics();
+        }
+        return cachedStatistics.getStatistics();
+    }
+
+    @Override
+    public void resetAll() {
+        buckets = new StatisticsBucket[BUCKETS];
+    }
+
+    private StatisticsBucket getBucketFor(Instant timestamp, int bucketIndex) {
+        StatisticsBucket bucket = getStatisticsBucketOrDefault(timestamp, bucketIndex);
+        resetIfOutdated(bucketIndex, bucket);
+        return bucket;
+    }
+
+    private StatisticsBucket generateStatistics() {
+        StatisticsBucket total = new StatisticsBucket(timeProvider.now().truncatedTo(SECONDS));
         for (int bucketIndex = 0; bucketIndex < buckets.length; bucketIndex++) {
             StatisticsBucket bucket = buckets[bucketIndex];
             if (bucket != null) {
@@ -50,12 +71,7 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
                 total.merge(bucket);
             }
         }
-        return total.getStatistics();
-    }
-
-    @Override
-    public void resetAll() {
-        buckets = new StatisticsBucket[BUCKETS];
+        return total;
     }
 
     private void resetIfOutdated(int bucketIndex, StatisticsBucket bucket) {
@@ -69,16 +85,7 @@ public class InMemoryStatisticsRepository implements StatisticsRepository {
         }
     }
 
-    private StatisticsBucket getBucketFor(Instant timestamp) {
-        StatisticsBucket bucket = getStatisticsBucketOrDefault(timestamp);
-        if (isOutdated(bucket.getTimestamp())) {
-            bucket.reset();
-        }
-        return bucket;
-    }
-
-    private StatisticsBucket getStatisticsBucketOrDefault(Instant timestamp) {
-        int bucketIndex = getBucketIndexFor(timestamp);
+    private StatisticsBucket getStatisticsBucketOrDefault(Instant timestamp, int bucketIndex) {
         if (buckets[bucketIndex] == null) {
             buckets[bucketIndex] = new StatisticsBucket(timestamp);
         }
