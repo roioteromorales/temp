@@ -1,7 +1,5 @@
 package com.n26.logic.statistics;
 
-
-import com.n26.logic.statistics.BigDecimalSummaryStatistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -38,6 +38,7 @@ public class TransactionServiceTest {
 
         Transaction savedTransaction = transactionService.save(transaction);
 
+        verify(statisticsServiceMock).add(transaction);
         assertThat(savedTransaction).isEqualTo(transaction);
     }
 
