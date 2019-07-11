@@ -3,7 +3,6 @@ package com.n26.logic.transactions.services;
 
 import com.n26.logic.transactions.model.Transaction;
 import com.n26.logic.statistics.services.StatisticsService;
-import com.n26.logic.transactions.services.TransactionService;
 import com.n26.presentation.transactions.time.TimestampValidator;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,7 +12,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.Instant;
 
-import static com.n26.logic.statistics.configuration.StatisticsTimeConfiguration.TIME_WINDOW;
+import static com.n26.presentation.transactions.time.TimestampValidator.TIME_WINDOW;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
