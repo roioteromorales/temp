@@ -20,26 +20,22 @@ public class BigDecimalSummaryStatisticsTest {
 
     @Test
     public void whenGettingDefaultStatistics_shouldContainDefaultValues() {
-        Statistic statistics = bigDecimalSummaryStatistics.getStatistics();
-
-        assertThat(statistics.getSum().longValue()).isEqualTo(0);
-        assertThat(statistics.getMax().longValue()).isEqualTo(0);
-        assertThat(statistics.getMin().longValue()).isEqualTo(0);
-        assertThat(statistics.getAvg().longValue()).isEqualTo(0);
-        assertThat(statistics.getCount()).isEqualTo(0);
+        assertThat(bigDecimalSummaryStatistics.getSum().longValue()).isEqualTo(0);
+        assertThat(bigDecimalSummaryStatistics.getMax().longValue()).isEqualTo(0);
+        assertThat(bigDecimalSummaryStatistics.getMin().longValue()).isEqualTo(0);
+        assertThat(bigDecimalSummaryStatistics.getAvg().longValue()).isEqualTo(0);
+        assertThat(bigDecimalSummaryStatistics.getCount()).isEqualTo(0);
     }
 
     @Test
     public void whenGettingStatisticsAfterOneInsert_shouldReturnExpectedStatistics() {
         bigDecimalSummaryStatistics.accept(new BigDecimal(12.3343));
 
-        Statistic statistics = bigDecimalSummaryStatistics.getStatistics();
-
-        assertThat(statistics.getSum().floatValue()).isEqualTo(12.3343f);
-        assertThat(statistics.getMax().floatValue()).isEqualTo(12.3343f);
-        assertThat(statistics.getMin().floatValue()).isEqualTo(12.3343f);
-        assertThat(statistics.getAvg().floatValue()).isEqualTo(12.33f);
-        assertThat(statistics.getCount()).isEqualTo(1);
+        assertThat(bigDecimalSummaryStatistics.getSum().floatValue()).isEqualTo(12.3343f);
+        assertThat(bigDecimalSummaryStatistics.getMax().floatValue()).isEqualTo(12.3343f);
+        assertThat(bigDecimalSummaryStatistics.getMin().floatValue()).isEqualTo(12.3343f);
+        assertThat(bigDecimalSummaryStatistics.getAvg().floatValue()).isEqualTo(12.33f);
+        assertThat(bigDecimalSummaryStatistics.getCount()).isEqualTo(1);
     }
 
     @Test
@@ -47,12 +43,10 @@ public class BigDecimalSummaryStatisticsTest {
         bigDecimalSummaryStatistics.accept(new BigDecimal(12.3343));
         bigDecimalSummaryStatistics.accept(new BigDecimal(11.1111));
 
-        Statistic statistics = bigDecimalSummaryStatistics.getStatistics();
-
-        assertThat(statistics.getSum().floatValue()).isEqualTo(23.4454f);
-        assertThat(statistics.getMax().floatValue()).isEqualTo(12.3343f);
-        assertThat(statistics.getMin().floatValue()).isEqualTo(11.1111f);
-        assertThat(statistics.getAvg().floatValue()).isEqualTo(11.72f);
-        assertThat(statistics.getCount()).isEqualTo(2);
+        assertThat(bigDecimalSummaryStatistics.getSum().floatValue()).isEqualTo(23.4454f);
+        assertThat(bigDecimalSummaryStatistics.getMax().floatValue()).isEqualTo(12.3343f);
+        assertThat(bigDecimalSummaryStatistics.getMin().floatValue()).isEqualTo(11.1111f);
+        assertThat(bigDecimalSummaryStatistics.getAvg().floatValue()).isEqualTo(11.72f);
+        assertThat(bigDecimalSummaryStatistics.getCount()).isEqualTo(2);
     }
 }

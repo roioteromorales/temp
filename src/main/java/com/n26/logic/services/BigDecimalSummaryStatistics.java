@@ -1,18 +1,14 @@
 package com.n26.logic.services;
 
 import com.n26.logic.model.Statistic;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
 
-import static com.n26.logic.configuration.StatisticsTimeConfiguration.TIME_WINDOW;
 
-
-@Service
 public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
-    private int timeWindow = TIME_WINDOW;
-    private int timeGranularity = 1000;
+    private static final BigDecimal MAX_VALUE = BigDecimal.valueOf(Long.MAX_VALUE);
+    private static final BigDecimal MIN_VALUE = BigDecimal.valueOf(Long.MIN_VALUE);
 
     private BigDecimal count;
     private BigDecimal sum;
@@ -20,48 +16,69 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
     private BigDecimal min;
 
     public BigDecimalSummaryStatistics() {
-        clean();
+        reset();
     }
 
     @Override
     public void accept(BigDecimal bigDecimal) {
-        if (count.equals(BigDecimal.ZERO)) {
-            max = bigDecimal;
-            min = bigDecimal;
-        } else {
-            max = maximum(max, bigDecimal);
-            min = minimum(min, bigDecimal);
-        }
+        max = maximum(max, bigDecimal);
+        min = minimum(min, bigDecimal);
         sum = sum.add(bigDecimal);
         count = count.add(BigDecimal.ONE);
     }
 
-    public Statistic getStatistics() {
-        Statistic statistic = new Statistic();
-        statistic.setCount(count.longValue());
-        statistic.setSum(sum);
-        statistic.setAvg(calculateAvg());
-        statistic.setMax(max);
-        statistic.setMin(min);
-        return statistic;
-    }
-
-    public void deleteAll() {
-        clean();
-    }
-
-    private void clean() {
+    public void reset() {
         count = BigDecimal.ZERO;
         sum = BigDecimal.ZERO;
-        max = BigDecimal.ZERO;
-        min = BigDecimal.ZERO;
+        max = MIN_VALUE;
+        min = MAX_VALUE;
     }
 
-    private BigDecimal calculateAvg() {
+    public long getCount() {
+        return count.longValue();
+    }
+
+    public BigDecimal getSum() {
+        return sum;
+    }
+
+    public BigDecimal getMax() {
+        if (max.equals(MIN_VALUE)) {
+            return BigDecimal.ZERO;
+        }
+        return max;
+    }
+
+    public BigDecimal getMin() {
+        if (min.equals(MAX_VALUE)) {
+            return BigDecimal.ZERO;
+        }
+        return min;
+    }
+
+    public BigDecimal getAvg() {
         if (count.equals(BigDecimal.ZERO)) {
             return BigDecimal.ZERO;
         }
         return sum.divide(count, 2, BigDecimal.ROUND_HALF_UP);
+    }
+
+    public BigDecimalSummaryStatistics merge(BigDecimalSummaryStatistics statistics) {
+        count = count.add(statistics.count);
+        sum = sum.add(statistics.sum);
+        max = maximum(max, statistics.max);
+        min = minimum(min, statistics.min);
+        return this;
+    }
+
+    public Statistic getStatistics() {
+        Statistic statistic = new Statistic();
+        statistic.setCount(getCount());
+        statistic.setSum(getSum());
+        statistic.setAvg(getAvg());
+        statistic.setMax(getMax());
+        statistic.setMin(getMin());
+        return statistic;
     }
 
     private static BigDecimal maximum(BigDecimal max, BigDecimal input) {
@@ -77,5 +94,4 @@ public class BigDecimalSummaryStatistics implements Consumer<BigDecimal> {
         }
         return min;
     }
-
 }
