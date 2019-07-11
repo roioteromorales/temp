@@ -18,19 +18,19 @@ public class TransactionsMapper {
         return transaction;
     }
 
-    private BigDecimal parseAmount(String amount) {
-        try {
-            return new BigDecimal(amount);
-        } catch (NumberFormatException e) {
-            throw new InvalidTransactionException("Transaction amount is not parsable to BigDecimal: " + amount, e);
-        }
-    }
-
     private Instant parseTimestamp(String inputTimestamp) {
         try {
             return Instant.parse(inputTimestamp);
         } catch (DateTimeParseException e) {
             throw new InvalidTransactionException("Transaction timestamp is not parsable: " + inputTimestamp, e);
+        }
+    }
+
+    private BigDecimal parseAmount(String amount) {
+        try {
+            return new BigDecimal(amount);
+        } catch (NumberFormatException e) {
+            throw new InvalidTransactionException("Transaction amount is not parsable to BigDecimal: " + amount, e);
         }
     }
 }

@@ -10,7 +10,6 @@ import java.time.Instant;
 @Service
 public class TimestampValidator {
     private static final int SIXTY_SECONDS = 60000;
-
     public static final int TIME_WINDOW = SIXTY_SECONDS;
 
     private TimeProvider timeProvider;
